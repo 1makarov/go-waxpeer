@@ -186,7 +186,7 @@ steamPrices, err := session.PricesSteam(730)
 
 ## Sell item
 ```go
-sellResponce, err := session.Sell(&[]SellItemConfig{
+sellresponse, err := session.Sell(&[]SellItemConfig{
     {ItemID: 23495634332, Price: 3454},
     {ItemID: 23434127874, Price: 8766},
     {ItemID: 28454583412, Price: 91233},
@@ -195,7 +195,7 @@ sellResponce, err := session.Sell(&[]SellItemConfig{
 
 ## Editing the price of an item on sale
 ```go
-editResponce, err := session.SellEdit(&[]SellItemConfig{
+editresponse, err := session.SellEdit(&[]SellItemConfig{
     {ItemID: 23495634332, Price: 3500},
     {ItemID: 23434127874, Price: 8900},
     {ItemID: 28454583412, Price: 90000},
@@ -204,7 +204,7 @@ editResponce, err := session.SellEdit(&[]SellItemConfig{
 
 ## Get a list of items available for sale
 ```go
-itemsResponce, err := session.SellItems(SellItemsConfig{
+sellitems, err := session.SellItems(SellItemsConfig{
     Skip: 0,
     Game: 730,
 })
@@ -212,7 +212,7 @@ itemsResponce, err := session.SellItems(SellItemsConfig{
 
 ## Get items that are on sale
 ```go
-itemsResponce, err := session.SellOrders()
+orders, err := session.SellOrders()
 ```
 
 ## Remove items from sale by ID

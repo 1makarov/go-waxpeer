@@ -474,7 +474,7 @@ func (s *Session) AccountHistoryID(idArray *[]string) ([]*accountHistoryID, erro
 	if err := fasthttp.Do(request, response); err != nil {
 		return nil, err
 	}
-	var body accountHistoryIDresponce
+	var body accountHistoryIDresponse
 	if err := json.Unmarshal(response.Body(), &body); err != nil {
 		return nil, err
 	}
@@ -509,7 +509,7 @@ func (s *Session) BuyName(c BuyNameConfig) error {
 	if err := fasthttp.Do(request, response); err != nil {
 		return err
 	}
-	var body buyresponce
+	var body buyresponse
 	if err := json.Unmarshal(response.Body(), &body); err != nil {
 		return err
 	}
@@ -544,7 +544,7 @@ func (s *Session) BuyID(c BuyIDConfig) error {
 	if err := fasthttp.Do(request, response); err != nil {
 		return err
 	}
-	var body buyresponce
+	var body buyresponse
 	if err := json.Unmarshal(response.Body(), &body); err != nil {
 		return err
 	}

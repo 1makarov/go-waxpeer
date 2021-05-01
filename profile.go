@@ -47,12 +47,12 @@ func (s *Session) AccountInformation() (*accountInformation, error) {
 	}
 	request := fasthttp.AcquireRequest()
 	request.Header.SetRequestURI(profileAccountInformation + bodyRequest.Encode())
-	responce := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, responce); err != nil {
+	response := fasthttp.AcquireResponse()
+	if err := fasthttp.Do(request, response); err != nil {
 		return nil, err
 	}
 	var body accountInformationResponse
-	if err := json.Unmarshal(responce.Body(), &body); err != nil {
+	if err := json.Unmarshal(response.Body(), &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -97,12 +97,12 @@ func (s *Session) AccountSetSteamApiKey(steamApiKey string) error {
 	}
 	request := fasthttp.AcquireRequest()
 	request.Header.SetRequestURI(profileSetSteamApiKey + bodyRequest.Encode())
-	responce := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, responce); err != nil {
+	response := fasthttp.AcquireResponse()
+	if err := fasthttp.Do(request, response); err != nil {
 		return err
 	}
 	var body accountSetSteamApiKeyResponse
-	if err := json.Unmarshal(responce.Body(), &body); err != nil {
+	if err := json.Unmarshal(response.Body(), &body); err != nil {
 		return err
 	}
 	if body.Success != true {
@@ -120,12 +120,12 @@ func (s *Session) AccountSetTradelink(tradelink string) error {
 	request := fasthttp.AcquireRequest()
 	request.Header.SetMethod("POST")
 	request.Header.SetRequestURI(profileChangeTradelink + bodyRequest.Encode())
-	responce := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, responce); err != nil {
+	response := fasthttp.AcquireResponse()
+	if err := fasthttp.Do(request, response); err != nil {
 		return err
 	}
 	var body accountSetTradelinkResponse
-	if err := json.Unmarshal(responce.Body(), &body); err != nil {
+	if err := json.Unmarshal(response.Body(), &body); err != nil {
 		return err
 	}
 	if body.Success != true {
@@ -149,12 +149,12 @@ func (s *Session) AccountTransfer(c AccountTransferConfig) error {
 	request := fasthttp.AcquireRequest()
 	request.Header.SetMethod("POST")
 	request.Header.SetRequestURI(profileSendBalance + bodyRequest.Encode())
-	responce := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, responce); err != nil {
+	response := fasthttp.AcquireResponse()
+	if err := fasthttp.Do(request, response); err != nil {
 		return err
 	}
 	var body transferResponse
-	if err := json.Unmarshal(responce.Body(), &body); err != nil {
+	if err := json.Unmarshal(response.Body(), &body); err != nil {
 		return wrongSteamId
 	}
 	if body.Success != true {
@@ -198,15 +198,15 @@ func (s *Session) OrderRemoveAll() error {
 	}
 	request := fasthttp.AcquireRequest()
 	request.Header.SetRequestURI(profileRemoveAllOrders + bodyRequest.Encode())
-	responce := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, responce); err != nil {
+	response := fasthttp.AcquireResponse()
+	if err := fasthttp.Do(request, response); err != nil {
 		return err
 	}
-	if len(responce.Body()) == 0 {
+	if len(response.Body()) == 0 {
 		return nil
 	}
-	var body orderRemoveAllresponce
-	if err := json.Unmarshal(responce.Body(), &body); err != nil {
+	var body orderRemoveAllresponse
+	if err := json.Unmarshal(response.Body(), &body); err != nil {
 		return err
 	}
 	if body.Success != true {
@@ -227,12 +227,12 @@ func (s *Session) OrderHistory(c OrderHistoryConfig) ([]*orderHistory, error) {
 	}
 	request := fasthttp.AcquireRequest()
 	request.Header.SetRequestURI(profileBuyOrderHistory + bodyRequest.Encode())
-	responce := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, responce); err != nil {
+	response := fasthttp.AcquireResponse()
+	if err := fasthttp.Do(request, response); err != nil {
 		return nil, err
 	}
 	var body orderHistoryResponse
-	if err := json.Unmarshal(responce.Body(), &body); err != nil {
+	if err := json.Unmarshal(response.Body(), &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -261,12 +261,12 @@ func (s *Session) OrderEdit(c OrderEditConfig) error {
 	request.Header.SetRequestURI(profileEditBuyOrder + bodyRequest.Encode())
 	request.Header.SetContentType("application/json")
 	request.SetBody(bodyRequestJson)
-	responce := fasthttp.AcquireResponse()
-	if err = fasthttp.Do(request, responce); err != nil {
+	response := fasthttp.AcquireResponse()
+	if err = fasthttp.Do(request, response); err != nil {
 		return err
 	}
 	var body orderEditResponse
-	if err = json.Unmarshal(responce.Body(), &body); err != nil {
+	if err = json.Unmarshal(response.Body(), &body); err != nil {
 		return err
 	}
 	if body.Success != true {
@@ -292,12 +292,12 @@ func (s *Session) OrderCreate(c OrderCreateConfig) (int64, error) {
 	request := fasthttp.AcquireRequest()
 	request.Header.SetMethod("POST")
 	request.Header.SetRequestURI(profileCreateBuyOrder + bodyRequest.Encode())
-	responce := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, responce); err != nil {
+	response := fasthttp.AcquireResponse()
+	if err := fasthttp.Do(request, response); err != nil {
 		return 0, err
 	}
 	var body orderCreateResponse
-	if err := json.Unmarshal(responce.Body(), &body); err != nil {
+	if err := json.Unmarshal(response.Body(), &body); err != nil {
 		return 0, err
 	}
 	if body.Success != true {
