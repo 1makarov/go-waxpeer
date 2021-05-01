@@ -89,6 +89,7 @@ func (s *Session) OrderOpen(c OrderOpenConfig) ([]*orderOpen, error) {
 	return body.Offers, nil
 }
 
+// set SteamApiKey
 func (s *Session) AccountSetSteamApiKey(steamApiKey string) error {
 	bodyRequest := url.Values{
 		"api":       {s.WaxpeerApiKey},
@@ -110,6 +111,7 @@ func (s *Session) AccountSetSteamApiKey(steamApiKey string) error {
 	return nil
 }
 
+// Set Steam Tradelink
 func (s *Session) AccountSetTradelink(tradelink string) error {
 	bodyRequest := url.Values{
 		"api":       {s.WaxpeerApiKey},
@@ -203,7 +205,7 @@ func (s *Session) OrderRemoveAll() error {
 	if len(responce.Body()) == 0 {
 		return nil
 	}
-	var body orderRemoveAllResponce
+	var body orderRemoveAllresponce
 	if err := json.Unmarshal(responce.Body(), &body); err != nil {
 		return err
 	}
@@ -217,6 +219,7 @@ type OrderHistoryConfig struct {
 	Skip uint64 // by default it will return 50 trades, use skip to get others
 }
 
+// get buy order history
 func (s *Session) OrderHistory(c OrderHistoryConfig) ([]*orderHistory, error) {
 	bodyRequest := url.Values{
 		"api":  {s.WaxpeerApiKey},
@@ -244,6 +247,7 @@ type OrderEditConfig struct {
 	Amount uint64 `json:"amount"` // new amount or old amount
 }
 
+// edit buy order
 func (s *Session) OrderEdit(c OrderEditConfig) error {
 	bodyRequest := url.Values{
 		"api": {s.WaxpeerApiKey},
@@ -277,6 +281,7 @@ type OrderCreateConfig struct {
 	Amount uint64 // amount of items
 }
 
+// create buy order
 func (s *Session) OrderCreate(c OrderCreateConfig) (int64, error) {
 	bodyRequest := url.Values{
 		"api":    {s.WaxpeerApiKey},

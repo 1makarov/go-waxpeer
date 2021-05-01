@@ -26,7 +26,7 @@ type checkTradelinkResponse struct {
 	Steamid64 string      `json:"steamid64"`
 }
 
-type buyResponce struct {
+type buyresponce struct {
 	Success  bool   `json:"success"`
 	ID       int64  `json:"id"`
 	Price    int64  `json:"price"`
@@ -238,7 +238,7 @@ type sellRemoveAllResponse struct {
 	Count   int    `json:"count"`
 }
 
-type accountHistoryIDResponce struct {
+type accountHistoryIDresponce struct {
 	Success bool                `json:"success"`
 	Trades  []*accountHistoryID `json:"trades"`
 }

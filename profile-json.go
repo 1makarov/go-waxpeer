@@ -48,7 +48,7 @@ type orderRemoveResponse struct {
 	Removed int64  `json:"removed"`
 }
 
-type orderRemoveAllResponce struct {
+type orderRemoveAllresponce struct {
 	Success bool   `json:"success"`
 	Msg     string `json:"msg"`
 	Count   int64  `json:"count"`

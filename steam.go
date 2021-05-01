@@ -53,6 +53,7 @@ type checkTradelink struct {
 	Tradelink string `json:"tradelink"`
 }
 
+// https://steamcommunity.com/tradeoffer/new/?partner=111&token=111
 func (s *Session) CheckTradelink(tradelink string) (*checkTradelinkResponse, error) {
 	bodyRequest := url.Values{
 		"api": {s.WaxpeerApiKey},
@@ -377,6 +378,7 @@ func (s *Session) SellItems(c SellItemsConfig) ([]*sellItems, error) {
 	return body.Items, nil
 }
 
+// getting the cost by name
 func (s *Session) PricesName(nameArray *[]string) ([]*priceName, error) {
 	if len(*nameArray) > 100 {
 		return nil, max100Elements
@@ -454,6 +456,7 @@ func (s *Session) SellRemoveAll() error {
 	return nil
 }
 
+// account history by id
 func (s *Session) AccountHistoryID(idArray *[]string) ([]*accountHistoryID, error) {
 	if len(*idArray) > 100 {
 		return nil, max100Elements
@@ -471,7 +474,7 @@ func (s *Session) AccountHistoryID(idArray *[]string) ([]*accountHistoryID, erro
 	if err := fasthttp.Do(request, response); err != nil {
 		return nil, err
 	}
-	var body accountHistoryIDResponce
+	var body accountHistoryIDresponce
 	if err := json.Unmarshal(response.Body(), &body); err != nil {
 		return nil, err
 	}
@@ -506,7 +509,7 @@ func (s *Session) BuyName(c BuyNameConfig) error {
 	if err := fasthttp.Do(request, response); err != nil {
 		return err
 	}
-	var body buyResponce
+	var body buyresponce
 	if err := json.Unmarshal(response.Body(), &body); err != nil {
 		return err
 	}
@@ -541,7 +544,7 @@ func (s *Session) BuyID(c BuyIDConfig) error {
 	if err := fasthttp.Do(request, response); err != nil {
 		return err
 	}
-	var body buyResponce
+	var body buyresponce
 	if err := json.Unmarshal(response.Body(), &body); err != nil {
 		return err
 	}
