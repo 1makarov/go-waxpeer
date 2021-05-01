@@ -1,4 +1,4 @@
-package go_waxpeer
+package waxpeer
 
 import (
 	"encoding/json"
