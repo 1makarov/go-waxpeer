@@ -5,17 +5,17 @@
 go get github.com/1makarov/go-waxpeer
 ```
 
-##Initialization
+## Initialization
 ```go
 session := CreateSession(WAXPEER_API)
 ```
 
-##Fetching your account info
+## Fetching your account info
 ```go
 user, err := session.GetAccountInformation()
 ```
 
-##Transfer of balance between users
+## Transfer of balance between users
 ```go
 err := session.AccountTransfer(AccountTransferConfig{
     Amount: 1000,
@@ -23,7 +23,7 @@ err := session.AccountTransfer(AccountTransferConfig{
 })
 ```
 
-##Get history
+## Get history
 ```go
 history, err := session.AccountHistory(AccountHistoryConfig{
     Skip:    0, 
@@ -32,7 +32,7 @@ history, err := session.AccountHistory(AccountHistoryConfig{
 })
 ```
 
-##Get history by ID
+## Get history by ID
 ```go
 history, err := session.AccountHistoryID(&[]string{
     "waxpeer",
@@ -41,22 +41,22 @@ history, err := session.AccountHistoryID(&[]string{
 })
 ```
 
-##Check your account for availability
+## Check your account for availability
 ```go
 err := session.AccountReloadInventory()
 ```
 
-##Install steamApiKey
+## Install steamApiKey
 ```go
 err := session.AccountSetSteamApiKey(STEAM_API_KEY)
 ```
 
-##Install tradelink
+## Install tradelink
 ```go
 err := session.AccountSetTradelink(Tradelink)
 ```
 
-##Buying item with ID
+## Buying item with ID
 ```go
 err := session.BuyID(BuyIDConfig{
     ProjectId: "",
@@ -67,7 +67,7 @@ err := session.BuyID(BuyIDConfig{
 })
 ```
 
-##Buying item with Name
+## Buying item with Name
 ```go
 err := session.BuyName(BuyNameConfig{
     ProjectId: "",
@@ -78,12 +78,12 @@ err := session.BuyName(BuyNameConfig{
 })
 ```
 
-##Checking tradelink
+## Checking tradelink
 ```go
 err := session.CheckTradelink(Tradelink)
 ```
 
-##Checking for the availability of item by ID
+## Checking for the availability of item by ID
 ```go
 value, err := session.ItemAvailable(&[]uint64{
     22564358567, 
@@ -91,7 +91,7 @@ value, err := session.ItemAvailable(&[]uint64{
 })
 ```
 
-##Create buy order
+## Create buy order
 ```go
 order, err := session.OrderCreate(OrderCreateConfig{
     Name: "AK-47 | Redline (Field-Tested)",
@@ -100,7 +100,7 @@ order, err := session.OrderCreate(OrderCreateConfig{
 })
 ```
 
-##Get open buy orders
+## Get open buy orders
 ```go
 order, err := session.OrderOpen(OrderOpenConfig{
     Name: "",
@@ -109,7 +109,7 @@ order, err := session.OrderOpen(OrderOpenConfig{
 ```
 
 
-##Edit buy order
+## Edit buy order
 ```go
 err := session.OrderEdit(OrderEditConfig{
     ID: 1298065,
@@ -118,7 +118,7 @@ err := session.OrderEdit(OrderEditConfig{
 })
 ```
 
-##Remove buy order
+## Remove buy order
 ```go
 err := session.OrderRemove(&[]uint64{
     1298065,
@@ -127,19 +127,19 @@ err := session.OrderRemove(&[]uint64{
 })
 ```
 
-##Remove all buy orders
+## Remove all buy orders
 ```go
 err := session.OrderRemoveAll()
 ```
 
-##Order History
+## Order History
 ```go
 orderHistory, err := session.OrderHistory(OrderHistoryConfig{
     Skip: 0,
 })
 ```
 
-##Get price lists and the quantity of each item
+## Get price lists and the quantity of each item
 ```go
 itemPrices, err := session.Prices(PricesConfig{
     Game: "csgo",
@@ -149,7 +149,7 @@ itemPrices, err := session.Prices(PricesConfig{
 })
 ```
 
-##Get prices with additional filtering
+## Get prices with additional filtering
 ```go
 itemPrices, err := session.PricesFilter(PricesFilterConfig{
     Skip: 0,
@@ -170,7 +170,7 @@ itemPrices, err := session.PricesFilter(PricesFilterConfig{
 })
 ```
 
-##Get the price of items by name
+## Get the price of items by name
 ```go
 itemPrices, err := session.PricesName(&[]string{
     "Tec-9 | Decimator (Minimal Wear)",
@@ -179,12 +179,12 @@ itemPrices, err := session.PricesName(&[]string{
 })
 ```
 
-##Get prices on steam by appid
+## Get prices on steam by appid
 ```go
 steamPrices, err := session.PricesSteam(730)
 ```
 
-##Sell item
+## Sell item
 ```go
 sellResponce, err := session.Sell(&[]SellItemConfig{
     {ItemID: 23495634332, Price: 3454},
@@ -193,7 +193,7 @@ sellResponce, err := session.Sell(&[]SellItemConfig{
 })
 ```
 
-##Editing the price of an item on sale
+## Editing the price of an item on sale
 ```go
 editResponce, err := session.SellEdit(&[]SellItemConfig{
     {ItemID: 23495634332, Price: 3500},
@@ -202,7 +202,7 @@ editResponce, err := session.SellEdit(&[]SellItemConfig{
 })
 ```
 
-##Get a list of items available for sale
+## Get a list of items available for sale
 ```go
 itemsResponce, err := session.SellItems(SellItemsConfig{
     Skip: 0,
@@ -210,12 +210,12 @@ itemsResponce, err := session.SellItems(SellItemsConfig{
 })
 ```
 
-##Get items that are on sale
+## Get items that are on sale
 ```go
 itemsResponce, err := session.SellOrders()
 ```
 
-##Remove items from sale by ID
+## Remove items from sale by ID
 ```go
 err := session.SellRemove(&[]uint64{
     23495634332,
@@ -224,7 +224,7 @@ err := session.SellRemove(&[]uint64{
 })
 ```
 
-##Remove all items from sale
+## Remove all items from sale
 ```go
 err := session.SellRemoveAll()
 ```
