@@ -45,14 +45,12 @@ func (s *Session) AccountInformation() (*accountInformation, error) {
 	bodyRequest := url.Values{
 		"api": {s.WaxpeerApiKey},
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(profileAccountInformation + bodyRequest.Encode())
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(profileAccountInformation + bodyRequest.Encode())
+	if err != nil {
 		return nil, err
 	}
 	var body accountInformationResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -73,14 +71,12 @@ func (s *Session) OrderOpen(c OrderOpenConfig) ([]*orderOpen, error) {
 		"name": {c.Name},
 		"skip": {strconv.FormatUint(c.Skip, 10)},
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(profileYourBuyOrders + bodyRequest.Encode())
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(profileYourBuyOrders + bodyRequest.Encode())
+	if err != nil {
 		return nil, err
 	}
 	var body orderOpenResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -95,14 +91,12 @@ func (s *Session) AccountSetSteamApiKey(steamApiKey string) error {
 		"api":       {s.WaxpeerApiKey},
 		"steam_api": {steamApiKey},
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(profileSetSteamApiKey + bodyRequest.Encode())
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(profileSetSteamApiKey + bodyRequest.Encode())
+	if err != nil {
 		return err
 	}
 	var body accountSetSteamApiKeyResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err := json.Unmarshal(*b, &body); err != nil {
 		return err
 	}
 	if body.Success != true {
@@ -169,20 +163,16 @@ func (s *Session) OrderRemove(idArray *[]uint64) error {
 	if len(*idArray) > 50 {
 		return max50Elements
 	}
-	bodyRequest := url.Values{
-		"api": {s.WaxpeerApiKey},
-	}
+	bodyRequest := url.Values{"api": {s.WaxpeerApiKey}}
 	for _, id := range *idArray {
 		bodyRequest.Add("id", strconv.FormatUint(id, 10))
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(profileRemoveBuyOrder + bodyRequest.Encode())
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(profileRemoveBuyOrder + bodyRequest.Encode())
+	if err != nil {
 		return err
 	}
 	var body orderRemoveResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return err
 	}
 	if body.Success != true {
@@ -193,20 +183,16 @@ func (s *Session) OrderRemove(idArray *[]uint64) error {
 
 // remove all buy orders
 func (s *Session) OrderRemoveAll() error {
-	bodyRequest := url.Values{
-		"api": {s.WaxpeerApiKey},
-	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(profileRemoveAllOrders + bodyRequest.Encode())
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	bodyRequest := url.Values{"api": {s.WaxpeerApiKey}}
+	b, err := Get(profileRemoveAllOrders + bodyRequest.Encode())
+	if err != nil {
 		return err
 	}
-	if len(response.Body()) == 0 {
+	if len(*b) == 0 {
 		return nil
 	}
 	var body orderRemoveAllresponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return err
 	}
 	if body.Success != true {
@@ -225,14 +211,12 @@ func (s *Session) OrderHistory(c OrderHistoryConfig) ([]*orderHistory, error) {
 		"api":  {s.WaxpeerApiKey},
 		"skip": {strconv.FormatUint(c.Skip, 10)},
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(profileBuyOrderHistory + bodyRequest.Encode())
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(profileBuyOrderHistory + bodyRequest.Encode())
+	if err != nil {
 		return nil, err
 	}
 	var body orderHistoryResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -320,15 +304,12 @@ func (s *Session) AccountHistory(c AccountHistoryConfig) ([]*accountHistory, err
 		"token":   {c.Token},
 		"skip":    {strconv.FormatUint(c.Skip, 10)},
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(profileHistory + bodyRequest.Encode())
-	request.Header.SetMethod("GET")
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(profileHistory + bodyRequest.Encode())
+	if err != nil {
 		return nil, err
 	}
 	var body accountHistoryResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
