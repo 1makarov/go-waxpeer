@@ -3,7 +3,6 @@ package waxpeer
 import (
 	"encoding/json"
 	"errors"
-	"github.com/valyala/fasthttp"
 	"net/url"
 	"strconv"
 )
@@ -33,14 +32,12 @@ func (s *Session) PricesSteam(appId uint64) ([]*steamItem, error) {
 		"api":  {s.WaxpeerApiKey},
 		"game": {strconv.FormatUint(appId, 10)},
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(steamGetSteamItems + bodyRequest.Encode())
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(steamGetSteamItems + bodyRequest.Encode())
+	if err != nil {
 		return nil, err
 	}
 	var body getSteamItemsResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -62,17 +59,12 @@ func (s *Session) CheckTradelink(tradelink string) (*checkTradelinkResponse, err
 	if err != nil {
 		return nil, err
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(steamCheckTradelink + bodyRequest.Encode())
-	request.Header.SetMethod("POST")
-	request.Header.SetContentType("application/json")
-	request.SetBody(bodyRequestJson)
-	response := fasthttp.AcquireResponse()
-	if err = fasthttp.Do(request, response); err != nil {
+	b, err := Post(steamCheckTradelink+bodyRequest.Encode(), bodyRequestJson)
+	if err != nil {
 		return nil, err
 	}
 	var body checkTradelinkResponse
-	if err = json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -101,15 +93,12 @@ func (s *Session) Prices(c PricesConfig) ([]*price, error) {
 	if c.MinPrice != 0 {
 		bodyRequest.Add("min_price", strconv.FormatUint(c.MinPrice, 10))
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(steamPrices + bodyRequest.Encode())
-	request.Header.SetMethod("GET")
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(steamPrices + bodyRequest.Encode())
+	if err != nil {
 		return nil, err
 	}
 	var body pricesResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -123,15 +112,12 @@ func AccountReadyToTransferP2P(SteamApiKey string) ([]*tradesReadyToTransferP2P,
 	bodyRequest := url.Values{
 		"steam_api": {SteamApiKey},
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(steamReadyToTransferP2P + bodyRequest.Encode())
-	request.Header.SetMethod("GET")
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(steamReadyToTransferP2P + bodyRequest.Encode())
+	if err != nil {
 		return nil, err
 	}
 	var body readyToTransferP2PResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -151,15 +137,12 @@ func (s *Session) ItemAvailable(idArray *[]uint64) ([]*itemAvailable, error) {
 	for _, id := range *idArray {
 		bodyRequest.Add("item_id", strconv.FormatUint(id, 10))
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(steamCheckAvailability + bodyRequest.Encode())
-	request.Header.SetMethod("GET")
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(steamCheckAvailability + bodyRequest.Encode())
+	if err != nil {
 		return nil, err
 	}
 	var body itemAvailableResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -217,15 +200,12 @@ func (s *Session) PricesFilter(c PricesFilterConfig) ([]*priceFilter, error) {
 	if c.Minified {
 		bodyRequest.Add("minified", "1")
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(steamGetItemsList + bodyRequest.Encode())
-	request.Header.SetMethod("GET")
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(steamGetItemsList + bodyRequest.Encode())
+	if err != nil {
 		return nil, err
 	}
 	var body pricesFilterResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -239,15 +219,12 @@ func (s *Session) AccountReloadInventory() error {
 	bodyRequest := url.Values{
 		"api": {s.WaxpeerApiKey},
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(steamFetchMyInventory + bodyRequest.Encode())
-	request.Header.SetMethod("GET")
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(steamFetchMyInventory + bodyRequest.Encode())
+	if err != nil {
 		return err
 	}
 	var body fetchMyInventoryResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return err
 	}
 	if body.Success != true {
@@ -277,17 +254,12 @@ func (s *Session) SellEdit(c *[]SellItemConfig) (*sellEditResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetMethod("POST")
-	request.Header.SetRequestURI(steamEditItem + bodyRequest.Encode())
-	request.Header.SetContentType("application/json")
-	request.SetBody(bodyRequestJson)
-	response := fasthttp.AcquireResponse()
-	if err = fasthttp.Do(request, response); err != nil {
+	b, err := Post(steamEditItem+bodyRequest.Encode(), bodyRequestJson)
+	if err != nil {
 		return nil, err
 	}
 	var body sellEditResponse
-	if err = json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -308,17 +280,12 @@ func (s *Session) Sell(c *[]SellItemConfig) (*sellResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetMethod("POST")
-	request.Header.SetRequestURI(steamListItem + bodyRequest.Encode())
-	request.Header.SetContentType("application/json")
-	request.SetBody(bodyRequestJson)
-	response := fasthttp.AcquireResponse()
-	if err = fasthttp.Do(request, response); err != nil {
+	b, err := Post(steamListItem+bodyRequest.Encode(), bodyRequestJson)
+	if err != nil {
 		return nil, err
 	}
 	var body sellResponse
-	if err = json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -332,15 +299,12 @@ func (s *Session) SellOrders() ([]*sellOrders, error) {
 	bodyRequest := url.Values{
 		"api": {s.WaxpeerApiKey},
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(steamListItem + bodyRequest.Encode())
-	request.Header.SetMethod("GET")
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(steamListItem + bodyRequest.Encode())
+	if err != nil {
 		return nil, err
 	}
 	var body sellOrdersResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -361,15 +325,12 @@ func (s *Session) SellItems(c SellItemsConfig) ([]*sellItems, error) {
 		"skip": {strconv.FormatUint(c.Skip, 10)},
 		"game": {strconv.FormatUint(c.Game, 10)},
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(steamGetInventory + bodyRequest.Encode())
-	request.Header.SetMethod("GET")
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(steamGetInventory + bodyRequest.Encode())
+	if err != nil {
 		return nil, err
 	}
 	var body sellItemsResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -389,15 +350,12 @@ func (s *Session) PricesName(nameArray *[]string) ([]*priceName, error) {
 	for _, name := range *nameArray {
 		bodyRequest.Add("names", name)
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(steamSearchItemsByName + bodyRequest.Encode())
-	request.Header.SetMethod("GET")
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(steamSearchItemsByName + bodyRequest.Encode())
+	if err != nil {
 		return nil, err
 	}
 	var body pricesNameResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -417,15 +375,12 @@ func (s *Session) SellRemove(idArray *[]uint64) error {
 	for _, id := range *idArray {
 		bodyRequest.Add("id", strconv.FormatUint(id, 10))
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(steamRemoveItems + bodyRequest.Encode())
-	request.Header.SetMethod("GET")
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(steamRemoveItems + bodyRequest.Encode())
+	if err != nil {
 		return err
 	}
 	var body sellRemoveResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return err
 	}
 	if body.Success != true {
@@ -439,15 +394,12 @@ func (s *Session) SellRemoveAll() error {
 	bodyRequest := url.Values{
 		"api": {s.WaxpeerApiKey},
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(steamRemoveAllItems + bodyRequest.Encode())
-	request.Header.SetMethod("GET")
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(steamRemoveAllItems + bodyRequest.Encode())
+	if err != nil {
 		return err
 	}
 	var body sellRemoveAllResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return err
 	}
 	if body.Success != true {
@@ -467,15 +419,12 @@ func (s *Session) AccountHistoryID(idArray *[]string) ([]*accountHistoryID, erro
 	for _, id := range *idArray {
 		bodyRequest.Add("id", id)
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(steamCheckManyProjectId + bodyRequest.Encode())
-	request.Header.SetMethod("GET")
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(steamCheckManyProjectId + bodyRequest.Encode())
+	if err != nil {
 		return nil, err
 	}
 	var body accountHistoryIDresponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return nil, err
 	}
 	if body.Success != true {
@@ -502,15 +451,12 @@ func (s *Session) BuyName(c BuyNameConfig) error {
 		"price":      {strconv.FormatUint(c.Price, 10)},
 		"partner":    {c.Partner},
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(steamBuyOneP2PName + bodyRequest.Encode())
-	request.Header.SetMethod("GET")
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(steamBuyOneP2PName + bodyRequest.Encode())
+	if err != nil {
 		return err
 	}
 	var body buyresponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return err
 	}
 	if body.Success != true {
@@ -537,15 +483,12 @@ func (s *Session) BuyID(c BuyIDConfig) error {
 		"item_id":    {strconv.FormatUint(c.ItemId, 10)},
 		"price":      {strconv.FormatUint(c.Price, 10)},
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetRequestURI(steamBuyOneP2P + bodyRequest.Encode())
-	request.Header.SetMethod("GET")
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Get(steamBuyOneP2P + bodyRequest.Encode())
+	if err != nil {
 		return err
 	}
 	var body buyresponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return err
 	}
 	if body.Success != true {

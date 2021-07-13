@@ -3,7 +3,6 @@ package waxpeer
 import (
 	"encoding/json"
 	"errors"
-	"github.com/valyala/fasthttp"
 	"net/url"
 	"strconv"
 )
@@ -96,7 +95,7 @@ func (s *Session) AccountSetSteamApiKey(steamApiKey string) error {
 		return err
 	}
 	var body accountSetSteamApiKeyResponse
-	if err := json.Unmarshal(*b, &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return err
 	}
 	if body.Success != true {
@@ -111,15 +110,12 @@ func (s *Session) AccountSetTradelink(tradelink string) error {
 		"api":       {s.WaxpeerApiKey},
 		"tradelink": {tradelink},
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetMethod("POST")
-	request.Header.SetRequestURI(profileChangeTradelink + bodyRequest.Encode())
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Post(profileChangeTradelink+bodyRequest.Encode(), nil)
+	if err != nil {
 		return err
 	}
 	var body accountSetTradelinkResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return err
 	}
 	if body.Success != true {
@@ -140,15 +136,12 @@ func (s *Session) AccountTransfer(c AccountTransferConfig) error {
 		"steam_id": {strconv.FormatUint(c.SteamId, 10)},
 		"amount":   {strconv.FormatUint(c.Amount, 10)},
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetMethod("POST")
-	request.Header.SetRequestURI(profileSendBalance + bodyRequest.Encode())
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Post(profileSendBalance+bodyRequest.Encode(), nil)
+	if err != nil {
 		return err
 	}
 	var body transferResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return wrongSteamId
 	}
 	if body.Success != true {
@@ -240,17 +233,12 @@ func (s *Session) OrderEdit(c OrderEditConfig) error {
 	if err != nil {
 		return err
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetMethod("POST")
-	request.Header.SetRequestURI(profileEditBuyOrder + bodyRequest.Encode())
-	request.Header.SetContentType("application/json")
-	request.SetBody(bodyRequestJson)
-	response := fasthttp.AcquireResponse()
-	if err = fasthttp.Do(request, response); err != nil {
+	b, err := Post(profileEditBuyOrder+bodyRequest.Encode(), bodyRequestJson)
+	if err != nil {
 		return err
 	}
 	var body orderEditResponse
-	if err = json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return err
 	}
 	if body.Success != true {
@@ -273,15 +261,12 @@ func (s *Session) OrderCreate(c OrderCreateConfig) (int64, error) {
 		"price":  {strconv.FormatUint(c.Price, 10)},
 		"amount": {strconv.FormatUint(c.Amount, 10)},
 	}
-	request := fasthttp.AcquireRequest()
-	request.Header.SetMethod("POST")
-	request.Header.SetRequestURI(profileCreateBuyOrder + bodyRequest.Encode())
-	response := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(request, response); err != nil {
+	b, err := Post(profileCreateBuyOrder+bodyRequest.Encode(), nil)
+	if err != nil {
 		return 0, err
 	}
 	var body orderCreateResponse
-	if err := json.Unmarshal(response.Body(), &body); err != nil {
+	if err = json.Unmarshal(*b, &body); err != nil {
 		return 0, err
 	}
 	if body.Success != true {
